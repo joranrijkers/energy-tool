@@ -6,22 +6,30 @@ services:
       context: ./backend
     volumes:
       - sqlite_data:/app
-    ports:
-      - "8000:8000"
+    expose:
+      - "8000"
     environment:
       - CORS_ORIGINS=${CORS_ORIGINS:-*}
     networks:
       - app-network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.backend.rule=Host(`api.${DOMAIN:-localhost}`)"
+      - "traefik.http.services.backend.loadbalancer.server.port=8000"
 
   frontend:
     build:
       context: ./frontend
-    ports:
-      - "3000:80"
+    expose:
+      - "80"
     environment:
-      - API_URL=${API_URL:-http://backend:8000}
+      - API_URL=${API_URL:-/api}
     networks:
       - app-network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.frontend.rule=Host(`${DOMAIN:-localhost}`)"
+      - "traefik.http.services.frontend.loadbalancer.server.port=80"
 
 volumes:
   sqlite_data:
