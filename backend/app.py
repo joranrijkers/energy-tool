@@ -9,12 +9,16 @@ API_URL = "https://api.energyzero.nl/v1/energyprices"
 
 app = FastAPI()
 
-# Get CORS origins from environment variable
-CORS_ORIGINS = os.getenv("CORS_ORIGINS", "*").split(",")
+# Expliciet de origins definiëren
+origins = [
+    "http://localhost:3000",
+    "http://localhost",
+    "http://localhost:80",
+]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=CORS_ORIGINS,
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

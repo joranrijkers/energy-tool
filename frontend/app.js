@@ -1,5 +1,5 @@
 const priceElement = document.getElementById('price');
-const API_URL = window.API_URL || '/api';  // Fallback naar /api als API_URL niet is gezet
+const API_URL = 'http://localhost:8000';  // Tijdelijk voor testen
 
 async function fetchPrice() {
     try {
@@ -10,6 +10,11 @@ async function fetchPrice() {
                 'Content-Type': 'application/json'
             }
         });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
         const data = await response.json();
         if (data.price) {
             priceElement.textContent = `Price: ${data.price} EUR at ${data.timestamp}`;
